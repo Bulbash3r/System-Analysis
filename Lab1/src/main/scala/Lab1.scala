@@ -19,10 +19,14 @@ object Lab1 {
 
   /**
     * Parse dataset file
+    * @return (mpg, horsepower) - DenseVectors with data
     */
   def parseFile(filename: String,
-                mpg: DenseVector[Double],
-                horsepower: DenseVector[Double]): Unit = {
+                ): (DenseVector[Double], DenseVector[Double]) = {
+
+    val mpg = DenseVector.zeros[Double](392)
+    val horsepower = DenseVector.zeros[Double](392)
+
     val file: BufferedSource = Source.fromFile(filename)
     val lines = file.getLines().toList
     var i = 0
@@ -35,6 +39,7 @@ object Lab1 {
         i+=1
       }
     }
+    (mpg, horsepower)
   }
 
   /**
@@ -65,8 +70,9 @@ object Lab1 {
     val f = Figure("Linear regression")
     val p = f.subplot(0)
     val x = linspace (13.2, 48)
+    val x2 = linspace (13.2, 48)
     val x1 = linspace (min(mpg), max(mpg))
-    val equation = b :+ (k :* x1)
+    val equation = (k :* x1) :+ b
 
     val annotation1 = f"Linear regression: y = " + new DecimalFormat("#0.00").format(k) + " * x + " + new DecimalFormat("#0.00").format(b)
     val annotation2 = f"Optimal plot: y = 500 / (x - 10.5) + 49"
@@ -76,6 +82,7 @@ object Lab1 {
     p += plot(mpg, horsepower, '.', colorcode = "black", name = "Dots")
     p += plot(x1, equation, name = "Linear regression")
     p += plot(x, 500.0 / (x - 10.5) + 49.0, name = "Optimal plot")    //отрицательная криволинейная зависимость
+    p += plot(x2, cos(x2) + sin (x2))
 
     p.xlabel = "mpg"
     p.ylabel = "horsepower"
@@ -83,13 +90,11 @@ object Lab1 {
     p.legend = true
     f.height = 900
     f.width  = 1500
-
-
     f.saveas("lines.png")
   }
 
   /**
-    * @return coefficients of linera regression equalition
+    * @return coefficients of linear regression equalition
     */
   def getLinearRegression(mpg: DenseVector[Double], horsepower: DenseVector[Double]): (Double, Double) = {
     val features = DenseMatrix.horzcat(
@@ -101,13 +106,10 @@ object Lab1 {
   }
 
   def main (args: Array[String]): Unit = {
-    val mpg = DenseVector.zeros[Double](392)
-    val horsepower = DenseVector.zeros[Double](392)
-
-    parseFile(getFilename, mpg, horsepower)
+    val (mpg, horsepower) = parseFile (getFilename)
     val (k, b) = getLinearRegression(mpg, horsepower)
-    println("Correlation coefficient: " + getCorrelation(mpg, horsepower))
     printGraph(mpg, horsepower, k, b)
+    println("Correlation coefficient: " + getCorrelation(mpg, horsepower))
     println("Linear regression: y = " + new DecimalFormat("#0.000000").format(k) + " * x + " + new DecimalFormat("#0.000000").format(b))
     println("Optimal plot: y = 500 / (x - 10.5) + 49")
   }
