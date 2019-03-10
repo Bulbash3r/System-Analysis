@@ -22,7 +22,7 @@ object Lab1 {
     * @return (mpg, horsepower) - DenseVectors with data
     */
   def parseFile(filename: String,
-                ): (DenseVector[Double], DenseVector[Double]) = {
+               ): (DenseVector[Double], DenseVector[Double]) = {
 
     val mpg = DenseVector.zeros[Double](392)
     val horsepower = DenseVector.zeros[Double](392)
@@ -70,7 +70,6 @@ object Lab1 {
     val f = Figure("Linear regression")
     val p = f.subplot(0)
     val x = linspace (13.2, 48)
-    val x2 = linspace (13.2, 48)
     val x1 = linspace (min(mpg), max(mpg))
     val equation = (k :* x1) :+ b
 
@@ -82,7 +81,6 @@ object Lab1 {
     p += plot(mpg, horsepower, '.', colorcode = "black", name = "Dots")
     p += plot(x1, equation, name = "Linear regression")
     p += plot(x, 500.0 / (x - 10.5) + 49.0, name = "Optimal plot")    //отрицательная криволинейная зависимость
-    p += plot(x2, cos(x2) + sin (x2))
 
     p.xlabel = "mpg"
     p.ylabel = "horsepower"
