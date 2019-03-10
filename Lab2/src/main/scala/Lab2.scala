@@ -55,5 +55,4 @@ object Lab2 {
 
 
   }
-
 }
